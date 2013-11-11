@@ -1,0 +1,10 @@
+<h1>Welcome to my blog!</h1>
+<ul>
+<% @posts.each do |post| %>
+  <li>
+    <h2><a href="/posts/<%= post.id %>"><%= post.title %></a>
+    <span><%= pretty_date(post.created_at) %></span>
+    </h2>
+  </li>
+<% end %>
+</ul> 
