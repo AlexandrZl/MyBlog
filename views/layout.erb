@@ -28,6 +28,12 @@
     <% if post_show_page?  %>
       <li><a href="/posts/<%= @post.id %>/edit">Edit Post</a></li>
     <% end %> 
+    <% unless session[:foo]==nil %>  
+      <form class="nav navbar-right" action="/logout" method="post" >
+        <button type="submit" class="btn btn-success">Log out</button>
+        <p class="text-info">Welcome, User!</p>
+      </form>
+    <% else  %>
     <form action = "reg" method = "get" class="navbar-form navbar-right">
                <button type="submit" class="btn btn-success">Sign up</button>
             </form>
@@ -39,7 +45,8 @@
                    <input type="password" name="password" placeholder="Password" class="form-control">
                 </div>
                 <button type="submit" class="btn btn-success">Sign in</button>
-              </form>                           
+              </form>    
+              <% end %>                       
       </div>
        </div>
       </div>
