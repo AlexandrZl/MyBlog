@@ -81,24 +81,32 @@ get "/about" do
 end
 
 
-post '/login' do
-  session[:foo] = params[:username], params[:password], params[:email]
-  @user = User.new(:name => params[:username], :password => params[:password], :email => params[:email])
-  if @user.save
-    redirect "/"
-  else
-    redirect '/about'
+post '/signup' do
+  session[:name]     = params[:username]
+  session[:password] = params[:password]
+  session[:email]    = params[:email]
+  session[:foo]      = session[:name], session[:password], session[:email]
+  @user = User.new(name: params[:username], password: params[:password], email: params[:email])
+  unless session[:name] == User.find_by(name: session[:name])
+    if @user.save
+      redirect "/"
+    else
+    redirect '/notaunt'
+    end
+  else 
+    redirect '/notaunt'
   end
 end
 
 
-post '/sign' do
-  session[:foo] = params[:nameuser] , params[:password]
-  if session[:foo] == User.where(params[:name],params[:password])
-    session[:foo] = params[:nameuser], params[:password]
+post '/signin' do
+  session[:name]=params[:name]
+  session[:password]=params[:password]
+  user = User.find_by(name: session[:name], password: session[:password])
+  unless user==nil #session[:name] == User.where(name: session[:name])
+    session[:foo] = session[:name], session[:password]
     redirect "/"
   else 
-    session.clear
     redirect "/notaunt"
   end
 end
