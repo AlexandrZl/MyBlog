@@ -18,26 +18,38 @@
     </div>
   </div>
 </div>
-<% unless Comment.all=='' %>
-  <div class="row">
-    <div class="col-sm-4 col-md-4">
-      <div class="panel panel-default">
-        <div class="panel-body"> 
-        <% Comment.all.each do |comment| %>
-         <div class="panel panel-default">
-        <%=comment.title %>
-      </div>
-        <%=comment.body %>
-        <form action = "/delcom" method="post">
-        <div class="com">
-        <button class="btn btn-info" type="submit">Delete</button>
-      </div>
-    </from>
+
+<% unless Comment.all==nil %>
+<div class="comm">
+<fieldset>
+    <div id="legend">
+      <legend class="">Comments</legend>
+    </div>
+    <div class="control-group">
+      <% unless session[:name]==nil %>
+      <% User.all.each do |user| %>
+      <label class="control-label"  for="username">User:<%=user.name%></label>
       <% end %>
+      <% else %>
+       <label class="control-label"  for="username">User: Anonym </label>
+       <% end %>
+      <div class="controls">
+        <% Comment.all.each do |comm| %>
+        <input class="form-control" id="disabledInput" type="text" placeholder="Title: <%= comm.title %>" disabled>
+        <div class="row">
+          <div class="col-sm-4 col-md-4">
+            <div class="panel panel-default">
+              <div class="panel-body">                
+                <%= comm.body %>
+              </div>
+            </div>
+          </div>
+        </div>
+        <% end %>
+      </div>
     </div>
   </div>
-  </div>
-</div>
-<% end %>
+  <% end %>
+
 
         

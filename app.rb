@@ -30,7 +30,7 @@ end
 
 
 post "/comment" do
-  @comm = Comment.new(params[:comm], :user_name => session[:name])
+  @comm = Comment.new(params[:comm])
   if @comm.save
     redirect '/'
   else
@@ -94,19 +94,32 @@ post '/signup' do
   session[:name]     = params[:username]
   session[:password] = params[:password]
   session[:email]    = params[:email]
-  User.all.each do |user|
-    if session[:name] == user.name
-      redirect '/exists'
-    else
-      @user = User.new(name: params[:username], password: params[:password], email: params[:email])
-      if @user.save
-        session[:foo] = session[:name], session[:password], session[:email]
-        redirect "/"
+  @user=User.first
+  unless @user==nil
+    User.all.each do |user|
+      if session[:name] == user.name
+        redirect '/exists'
       else
-        redirect '/notaunt'
+        @user = User.new(name: params[:username], password: params[:password], email: params[:email])
+        if @user.save
+          session[:foo] = session[:name], session[:password], session[:email]
+          redirect "/"
+        else
+          redirect '/notaunt'
+        end
       end
     end
+  else
+    @user = User.new(name: params[:username], password: params[:password], email: params[:email])
+    if @user.save
+      session[:foo] = session[:name], session[:password], session[:email]
+      redirect "/"
+    else
+      redirect '/notaunt'
+    end
   end
+
+
 end
 
 
