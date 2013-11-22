@@ -18,4 +18,26 @@
     </div>
   </div>
 </div>
+<% unless Comment.all=='' %>
+  <div class="row">
+    <div class="col-sm-4 col-md-4">
+      <div class="panel panel-default">
+        <div class="panel-body"> 
+        <% Comment.all.each do |comment| %>
+         <div class="panel panel-default">
+        <%=comment.title %>
+      </div>
+        <%=comment.body %>
+        <form action = "/delcom" method="post">
+        <div class="com">
+        <button class="btn btn-info" type="submit">Delete</button>
+      </div>
+    </from>
+      <% end %>
+    </div>
+  </div>
+  </div>
+</div>
+<% end %>
 
+        

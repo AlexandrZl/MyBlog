@@ -23,8 +23,10 @@
          <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
     <li><a href="/">Home</a></li>
-    <li><a href="/about">About Me</a></li>             
+    <li><a href="/about">About Me</a></li>
+    <% unless session[:foo]==nil %>             
     <li><a href="/posts/new">New Post</a></li> 
+    <% end %>
     <% if post_show_page?  %>
       <li><a href="/posts/<%= @post.id %>/edit">Edit Post</a></li>
     <% end %> 
@@ -37,7 +39,7 @@
     <form action = "reg" method = "get" class="navbar-form navbar-right">
                <button type="submit" class="btn btn-success">Sign up</button>
             </form>
-            <form  action="signin" method="post" class="navbar-form navbar-right">
+            <form  action="/signin" method="post" class="navbar-form navbar-right">
                 <div class="form-group">
                   <input type="text" name="name" placeholder="Login" class="form-control">
                 </div>

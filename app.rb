@@ -1,9 +1,13 @@
 require "sinatra"
 require "sinatra/activerecord"
+require 'json'
 require_relative './helpers/posting'
 helpers Posting
 
-set :database, "sqlite3:///blog.db"
+ActiveRecord::Base.establish_connection(
+  :adapter => 'sqlite3',
+  :database => './db/blog.sqlite3'
+)
 
 configure do
   enable :sessions
@@ -26,12 +30,17 @@ end
 
 
 post "/comment" do
-  @comm = Comment.new(params[:comm])
+  @comm = Comment.new(params[:comm], :user_name => session[:name])
   if @comm.save
     redirect '/'
   else
    redirect '/about'
   end
+end
+
+post "/delcom" do
+  Comment.first.delete
+  redirect '/'
 end
 
 
@@ -85,16 +94,18 @@ post '/signup' do
   session[:name]     = params[:username]
   session[:password] = params[:password]
   session[:email]    = params[:email]
-  session[:foo]      = session[:name], session[:password], session[:email]
-  @user = User.new(name: params[:username], password: params[:password], email: params[:email])
-  unless session[:name] == User.find_by(name: session[:name])
-    if @user.save
-      redirect "/"
+  User.all.each do |user|
+    if session[:name] == user.name
+      redirect '/exists'
     else
-    redirect '/notaunt'
+      @user = User.new(name: params[:username], password: params[:password], email: params[:email])
+      if @user.save
+        session[:foo] = session[:name], session[:password], session[:email]
+        redirect "/"
+      else
+        redirect '/notaunt'
+      end
     end
-  else 
-    redirect '/notaunt'
   end
 end
 
@@ -102,12 +113,15 @@ end
 post '/signin' do
   session[:name]=params[:name]
   session[:password]=params[:password]
-  user = User.find_by(name: session[:name], password: session[:password])
-  unless user==nil #session[:name] == User.where(name: session[:name])
-    session[:foo] = session[:name], session[:password]
-    redirect "/"
-  else 
-    redirect "/notaunt"
+  User.all.each do |user|
+    if session[:name] == user.name && session[:password] == user.password
+      session[:foo] = session[:name], session[:password]
+      redirect "/"
+    elsif session[:name] == user.name || session[:password] == user.password
+      redirect "/check"
+    else
+      redirect "/notaunt"
+    end
   end
 end
 
@@ -116,6 +130,15 @@ get '/notaunt' do
   erb :error
 end
 
+
+get '/exists' do
+  erb :exists
+end
+
+
+get '/check' do
+  erb :check
+end
 
 get "/reg" do
   @title='Sign up'
