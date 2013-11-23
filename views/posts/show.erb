@@ -9,8 +9,8 @@
       <div class="panel panel-default">
         <div class="panel-body">                
           <form action="/comment" method="post">
-            <textarea id="comm_title" class="form-control counted" name="comm[title]" placeholder="Title" rows="1"></textarea>
-            <textarea id="comm_body" class="form-control counted" name="comm[body]" placeholder="Your comment" rows="5"></textarea>
+            <textarea  class="form-control counted" if="title" name="title" placeholder="Title" rows="1"></textarea>
+            <textarea class="form-control counted" id="body" name="body" placeholder="Your comment" rows="5"></textarea>
             <button class="btn btn-info" type="submit">Add new comment</button>
           </form>
         </div>
@@ -26,6 +26,7 @@
       <legend class="">Comments</legend>
     </div>
     <div class="control-group">
+      <% Comment.all.each do |comm| %>
       <% unless session[:name]==nil %>
       <% User.all.each do |user| %>
       <label class="control-label"  for="username">User:<%=user.name%></label>
@@ -34,13 +35,17 @@
        <label class="control-label"  for="username">User: Anonym </label>
        <% end %>
       <div class="controls">
-        <% Comment.all.each do |comm| %>
         <input class="form-control" id="disabledInput" type="text" placeholder="Title: <%= comm.title %>" disabled>
         <div class="row">
           <div class="col-sm-4 col-md-4">
             <div class="panel panel-default">
               <div class="panel-body">                
                 <%= comm.body %>
+                <div class="com">
+                  <form action='/delcom' method='post'>
+                <button class="btn btn-info" type="submit">Delete</button>
+              </from>
+            </div>
               </div>
             </div>
           </div>

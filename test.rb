@@ -29,7 +29,7 @@ end
 
 
 post "/comment" do
-  @comm = Comment.new(title: params[:title], body: params[:body], post_id: @post.id)
+  @comm = Comment.new(params[:comm])
   if @comm.save
     redirect '/'
   else
@@ -44,12 +44,7 @@ end
 
 
 post "/posts" do
-  User.all.each do |user|
-    if user.name == session[:name]
-      @id=user.id
-    end
-  end
-  @post = Post.new(title: params[:title], body: params[:body], user_id: @id)
+  @post = Post.new(params[:post])
   if @post.save
     redirect "posts/#{@post.id}"
   else
@@ -98,7 +93,6 @@ post '/signup' do
   session[:name]     = params[:name]
   session[:password] = params[:password]
   session[:email]    = params[:email]
-  unless User.first==nil
     User.all.each do |user|
       if session[:name] == user.name
         redirect '/exists'
@@ -112,35 +106,36 @@ post '/signup' do
         end
       end
     end
-  else
-    @user = User.new(name: params[:name], password: params[:password], email: params[:email])
-      if @user.save
-        session[:foo] = session[:name], session[:password], session[:email]
-        redirect "/"
-      else
-        redirect '/notaunt'
-      end
-  end
 end
 
-post '/signin' do 
+
+post '/signin' do
   User.all.each do |user|
-    if user.name == params[:name] 
-      if user.password == params[:password]
-        @user=user.name
-        @password=user.password
-      else 
-        redirect '/check'
-      end
+    if user.name == params[:name]
+      @user=user.name
+      @password=user.password
+    else
+      redirect "/notaunt"
     end
   end
-  unless @user==nil
-    session[:name] = @user
-    session[:foo] = @user, @password
-    redirect "/"
-  else 
-    redirect "/notaunt"
-  end
+  session[:name] = @user
+  session[:foo] = @user, @password
+  redirect "/"
+end
+post '/test' do 
+  User.all.each do |user|
+    if user.name == params[:name]
+  @user=user.name
+  @id=user.id
+end
+end
+unless @user==nil
+ session[:name] = @user
+  session[:foo] = @user, @password
+  redirect "/"
+else
+  redirect "notaunt"
+end
 end
 
 

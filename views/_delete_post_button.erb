@@ -1,4 +1,13 @@
-<form action="/posts/<%= post_id %>" method="post">
-  <input type="hidden" name="_method" value="delete" /> 
-  <input type="submit" value="Delete Post" />
-</form>
+<% User.all.each do |user| %>
+<% if session[:name] == user.name  %>
+  <% @id=user.id %>
+<% end %>
+<% end %>
+<% if @post.id == @id %>
+  <form action="/posts/<%= post_id %>" method="post">
+    <input type="hidden" name="_method" value="delete" /> 
+    <input type="submit" value="Delete Post" />
+  </form>
+<% end %>
+
+

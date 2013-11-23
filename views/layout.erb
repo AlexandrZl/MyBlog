@@ -26,11 +26,9 @@
     <li><a href="/about">About Me</a></li>
     <% unless session[:foo]==nil %>             
     <li><a href="/posts/new">New Post</a></li> 
-    <% end %>
     <% if post_show_page?  %>
       <li><a href="/posts/<%= @post.id %>/edit">Edit Post</a></li>
-    <% end %> 
-    <% unless session[:foo]==nil %>  
+    <% end %>   
       <form class="nav navbar-right" action="/logout" method="post" >
         <button type="submit" class="btn btn-success">Log out</button>
         <p class="text-info">Welcome, <%= session[:name] %></p>

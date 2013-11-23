@@ -4,11 +4,11 @@
       <div class="panel panel-default">
         <div class="panel-body">                
           <form action="/posts" method="post">
-          	<label for="post_title">Title:</label><br />
-            <textarea id="post_title" class="form-control counted" name="post[title]" type="text"  rows="1" value="<%= @post.title %>" /></textarea>
+            <label for="post_title">Title:</label><br />
+            <textarea  class="form-control counted" id="name" name="title" type="text"  rows="1" ></textarea>
              <br />
-            <label for="post_body">Body:</label><br />
-            <textarea id="post_body" class="form-control counted"  name="post[body]" rows="5"><%= @post.body %></textarea>
+            <label >Body:</label><br />
+            <textarea  class="form-control counted" id="body"  name="body" rows="5"></textarea>
             <br />
             <input type="submit" class="btn btn-info" value="Create Post" />
           </form>
