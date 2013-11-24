@@ -27,14 +27,9 @@
     </div>
     <div class="control-group">
       <% Comment.all.each do |comm| %>
-      <% unless session[:name]==nil %>
-      <% User.all.each do |user| %>
-      <label class="control-label"  for="username">User:<%=user.name%></label>
-      <% end %>
-      <% else %>
-       <label class="control-label"  for="username">User: Anonym </label>
-       <% end %>
+      <% if comm.post_id == @post.id %>
       <div class="controls">
+      <label class="control-label">User:<%=comm.user_name%></label>
         <input class="form-control" id="disabledInput" type="text" placeholder="Title: <%= comm.title %>" disabled>
         <div class="row">
           <div class="col-sm-4 col-md-4">
@@ -42,19 +37,21 @@
               <div class="panel-body">                
                 <%= comm.body %>
                 <div class="com">
+                <% if @post.id == @id %>
                   <form action='/delcom' method='post'>
                 <button class="btn btn-info" type="submit">Delete</button>
               </from>
+              <% end %>
             </div>
               </div>
             </div>
           </div>
         </div>
         <% end %>
+      <% end %>
       </div>
     </div>
   </div>
   <% end %>
-
 
         

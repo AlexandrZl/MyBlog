@@ -29,7 +29,12 @@ end
 
 
 post "/comment" do
-  @comm = Comment.new(title: params[:title], body: params[:body], post_id: @post.id)
+  User.all.each do |user|
+    if user.name == session[:name]
+      @id=user.id
+    end
+  end
+  @comm = Comment.new(title: params[:title], body: params[:body], post_id: session[:id], user_name: session[:name])
   if @comm.save
     redirect '/'
   else
@@ -60,6 +65,12 @@ end
 
 get "/posts/:id" do
   @post = Post.find(params[:id])
+  session[:id] = @post.id
+  User.all.each do |user| 
+    if session[:name] == user.name  
+      @id=user.id 
+    end 
+  end
   @title = @post.title
   erb :"posts/show"
 end
