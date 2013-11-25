@@ -20,22 +20,28 @@
 </div>
 
 <% unless Comment.all==nil %>
+<% @post.comments.each do |post| %>
+<% @com=post.body %>
+<% @title=post.title %>
+<% @nam=post.user_name %>
 <div class="comm">
 <fieldset>
     <div id="legend">
       <legend class="">Comments</legend>
     </div>
-    <div class="control-group">
-      <% Comment.all.each do |comm| %>
-      <% if comm.post_id == @post.id %>
+    <div class="control-group">                  
       <div class="controls">
-      <label class="control-label">User:<%=comm.user_name%></label>
-        <input class="form-control" id="disabledInput" type="text" placeholder="Title: <%= comm.title %>" disabled>
+        <% if @nam %>
+      <label class="control-label">User:<%= @nam %></label>
+      <% else %>
+      <label class="control-label">User:<%= "Anonym" %></label>
+      <% end %>
+        <input class="form-control" id="disabledInput" type="text" placeholder="Title:" disabled>
         <div class="row">
           <div class="col-sm-4 col-md-4">
             <div class="panel panel-default">
               <div class="panel-body">                
-                <%= comm.body %>
+                <%= @com %>
                 <div class="com">
                 <% if @post.id == @id %>
                   <form action='/delcom' method='post'>
@@ -47,11 +53,8 @@
             </div>
           </div>
         </div>
-        <% end %>
-      <% end %>
       </div>
     </div>
   </div>
   <% end %>
-
-        
+  <% end %>

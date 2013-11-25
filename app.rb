@@ -42,6 +42,7 @@ post "/comment" do
   end
 end
 
+
 post "/delcom" do
   Comment.last.delete
   redirect '/'
@@ -134,6 +135,7 @@ post '/signup' do
   end
 end
 
+
 post '/signin' do 
   User.all.each do |user|
     if user.name == params[:name] 
@@ -168,6 +170,7 @@ end
 get '/check' do
   erb :check
 end
+
 
 get "/reg" do
   @title='Sign up'
