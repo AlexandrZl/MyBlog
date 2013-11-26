@@ -36,16 +36,10 @@ post "/comment" do
   end
   @comm = Comment.new(title: params[:title], body: params[:body], post_id: session[:id], user_name: session[:name])
   if @comm.save
-    redirect '/'
+    redirect "/"
   else
    redirect '/about'
   end
-end
-
-
-post "/delcom" do
-  Comment.last.delete
-  redirect '/'
 end
 
 
@@ -69,10 +63,9 @@ get "/posts/:id" do
   session[:id] = @post.id
   User.all.each do |user| 
     if session[:name] == user.name  
-      @id=user.id 
+      @id=user.id
     end 
   end
-  @title = @post.title
   erb :"posts/show"
 end
 
@@ -94,8 +87,17 @@ put "/posts/:id" do
 end
 
 
+delete "/delcom/:id" do
+  Comment.find(params[:id]).destroy
+  redirect "/"
+end
+
+
 delete "/posts/:id" do
   @post = Post.find(params[:id]).destroy
+  @post.comments.each do |post| 
+    post.delete
+  end
   redirect "/"
 end
 
@@ -113,25 +115,28 @@ post '/signup' do
   unless User.first==nil
     User.all.each do |user|
       if session[:name] == user.name
-        redirect '/exists'
-      else
-        @user = User.new(name: params[:name], password: params[:password], email: params[:email])
-        if @user.save
-          session[:foo] = session[:name], session[:password], session[:email]
-          redirect "/"
-        else
-          redirect '/notaunt'
-        end
+        @name=user.name
       end
     end
-  else
-    @user = User.new(name: params[:name], password: params[:password], email: params[:email])
+    if session[:name]== @name
+      redirect '/exists'
+    else
+      @user = User.new(name: params[:name], password: params[:password], email: params[:email])
       if @user.save
-        session[:foo] = session[:name], session[:password], session[:email]
+        session[:all] = session[:name], session[:password], session[:email]
         redirect "/"
       else
         redirect '/notaunt'
       end
+    end
+  else
+    @user = User.new(name: params[:name], password: params[:password], email: params[:email])
+    if @user.save
+      session[:all] = session[:name], session[:password], session[:email]
+      redirect "/"
+    else
+      redirect '/notaunt'
+    end
   end
 end
 
@@ -149,7 +154,7 @@ post '/signin' do
   end
   unless @user==nil
     session[:name] = @user
-    session[:foo] = @user, @password
+    session[:all] = @user, @password
     redirect "/"
   else 
     redirect "/notaunt"

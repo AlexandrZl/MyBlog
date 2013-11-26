@@ -24,7 +24,7 @@
           <ul class="nav navbar-nav">
     <li><a href="/">Home</a></li>
     <li><a href="/about">About Me</a></li>
-    <% unless session[:foo]==nil %>             
+    <% unless session[:all]==nil %>             
     <li><a href="/posts/new">New Post</a></li> 
     <% if post_show_page?  %>
       <li><a href="/posts/<%= @post.id %>/edit">Edit Post</a></li>
@@ -55,6 +55,6 @@
   <%= yield %>
   </ul>
 </div>
-  </div><!-- /.container -->
+  </div>
 </body>
 </html>

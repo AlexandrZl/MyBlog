@@ -19,16 +19,16 @@
   </div>
 </div>
 
+<fieldset>
+    <div id="legend">
+      <legend class="">Comments</legend>
+    </div>
 <% unless Comment.all==nil %>
 <% @post.comments.each do |post| %>
 <% @com=post.body %>
 <% @title=post.title %>
 <% @nam=post.user_name %>
 <div class="comm">
-<fieldset>
-    <div id="legend">
-      <legend class="">Comments</legend>
-    </div>
     <div class="control-group">                  
       <div class="controls">
         <% if @nam %>
@@ -43,12 +43,10 @@
               <div class="panel-body">                
                 <%= @com %>
                 <div class="com">
-                <% if @post.id == @id %>
-                  <form action='/delcom' method='post'>
-                <button class="btn btn-info" type="submit">Delete</button>
-              </from>
-              <% end %>
-            </div>
+                <% if @post.user_id == @id %>
+                <%= delete_comment_button(@delcom) %>
+                <% end %> 
+                </div>
               </div>
             </div>
           </div>

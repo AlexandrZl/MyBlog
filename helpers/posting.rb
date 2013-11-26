@@ -18,8 +18,13 @@ module Posting
   end
 
   def delete_post_button(post_id)
-    erb :_delete_post_button, locals: { post_id: post_id}
+    erb :_delete_post_button, locals: { post_id: post_id }
   end
+
+   def delete_comment_button(comment_id)
+    erb :_delete_comment_button, locals: { comment_id: comment_id}
+  end
+
 end
 
 

@@ -4,8 +4,8 @@
 <% end %>
 <% end %>
 <% if @post.user_id == @id %>
-  <form action="/posts/<%= post_id %>" method="post">
+  <form action="/delcom/<%= comment_id %>" method="post">
     <input type="hidden" name="_method" value="delete" /> 
-    <input type="submit" value="Delete Post" />
+    <input type="submit" value="Delete Comment" />
   </form>
 <% end %>
