@@ -34,11 +34,11 @@ post "/comment" do
       @id=user.id
     end
   end
-  @comm = Comment.new(title: params[:title], body: params[:body], post_id: session[:id], user_name: session[:name])
+  @comm = Comment.new(title: params[:title], body: params[:body], post_id: session[:id], user_name: session[:name], user_id: @id)
   if @comm.save
     redirect "/"
   else
-   redirect '/about'
+    redirect "/"
   end
 end
 

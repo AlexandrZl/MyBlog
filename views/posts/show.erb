@@ -36,7 +36,7 @@
       <% else %>
       <label class="control-label">User:<%= "Anonym" %></label>
       <% end %>
-        <input class="form-control" id="disabledInput" type="text" placeholder="Title:" disabled>
+        <input class="form-control" id="disabledInput" type="text" placeholder="Title:<%= @title %>" disabled>
         <div class="row">
           <div class="col-sm-4 col-md-4">
             <div class="panel panel-default">
@@ -44,7 +44,7 @@
                 <%= @com %>
                 <div class="com">
                 <% if @post.user_id == @id %>
-                <%= delete_comment_button(@delcom) %>
+                <%= delete_comment_button(post.id) %>
                 <% end %> 
                 </div>
               </div>
