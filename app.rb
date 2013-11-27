@@ -36,7 +36,7 @@ post "/comment" do
   end
   @comm = Comment.new(title: params[:title], body: params[:body], post_id: session[:id], user_name: session[:name], user_id: @id)
   if @comm.save
-    redirect "/"
+    redirect "/posts/#{@comm.post_id}"
   else
     redirect "/"
   end
@@ -88,8 +88,8 @@ end
 
 
 delete "/delcom/:id" do
-  Comment.find(params[:id]).destroy
-  redirect "/"
+  @comm = Comment.find(params[:id]).destroy
+  redirect "/posts/#{@comm.post_id}"
 end
 
 
