@@ -1,7 +1,9 @@
 require "sinatra"
 require "sinatra/activerecord"
+require "digest/sha2"
 require_relative './helpers/posting'
 helpers Posting
+@@salt='ruby'
 
 ActiveRecord::Base.establish_connection(
   :adapter => 'sqlite3',
@@ -109,47 +111,33 @@ end
 
 
 post '/signup' do
-  session[:name]     = params[:name]
-  session[:password] = params[:password]
-  session[:email]    = params[:email]
-  unless User.first==nil
-    User.all.each do |user|
-      if session[:name] == user.name
-        @name=user.name
-      end
-    end
-    if session[:name]== @name
-      redirect '/exists'
-    else
-      @user = User.new(name: params[:name], password: params[:password], email: params[:email])
+  if params[:password] == params[:password_second]
+    @user=User.find_by_email(params[:email]) 
+    unless @user
+      hash = Digest::SHA2.hexdigest(params[:password] + @@salt)
+      @user = User.new(name: params[:name], :password => hash, email: params[:email])
       if @user.save
-        session[:all] = session[:name], session[:password], session[:email]
-        redirect "/"
+        redirect '/enter'
       else
         redirect '/notaunt'
       end
+    else
+      redirect 'check_email'
     end
   else
-    @user = User.new(name: params[:name], password: params[:password], email: params[:email])
-    if @user.save
-      session[:all] = session[:name], session[:password], session[:email]
-      redirect "/"
-    else
-      redirect '/notaunt'
-    end
+    redirect '/reg'
   end
 end
 
 
 post '/signin' do 
-  User.all.each do |user|
-    if user.name == params[:name] 
-      if user.password == params[:password]
-        @user=user.name
-        @password=user.password
-      else 
-        redirect '/check'
-      end
+  @user_check=User.find_by_name(params[:name])
+  @password = Digest::SHA2.hexdigest(params[:password] + @@salt)
+  if @user_check.name == params[:name]
+    if @user_check.password == @password
+        @user = @user_check.name
+    else
+      redirect '/check'
     end
   end
   unless @user==nil
@@ -161,9 +149,16 @@ post '/signin' do
   end
 end
 
+get '/check_email' do
+  erb :exists_email
+end
 
 get '/notaunt' do
   erb :error
+end
+
+get '/enter' do
+  erb :enter
 end
 
 
