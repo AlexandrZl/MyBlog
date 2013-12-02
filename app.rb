@@ -63,11 +63,6 @@ end
 get "/posts/:id" do
   @post = Post.find(params[:id])
   session[:id] = @post.id
-  User.all.each do |user| 
-    if session[:name] == user.name  
-      @id=user.id
-    end 
-  end
   erb :"posts/show"
 end
 
@@ -112,14 +107,14 @@ end
 
 post '/signup' do
   if params[:password] == params[:password_second]
-    @user=User.find_by_email(params[:email]) 
-    unless @user
+    user=User.find_by_email(params[:email]) 
+    unless user
       hash = Digest::SHA2.hexdigest(params[:password] + @@salt)
-      @user = User.new(name: params[:name], :password => hash, email: params[:email])
-      if @user.save
+      user = User.new(name: params[:name], :password => hash, email: params[:email])
+      if user.save
         redirect '/enter'
       else
-        redirect '/notaunt'
+        redirect '/notauth'
       end
     else
       redirect 'check_email'
@@ -131,29 +126,25 @@ end
 
 
 post '/signin' do 
-  @user_check=User.find_by_name(params[:name])
-  @password = Digest::SHA2.hexdigest(params[:password] + @@salt)
-  if @user_check.name == params[:name]
-    if @user_check.password == @password
-        @user = @user_check.name
-    else
+  password = Digest::SHA2.hexdigest(params[:password] + @@salt)
+  user = User.find_by(name: params[:name], password: password)
+  user_check = User.find_by_name(params[:name])
+  unless user
+    if user_check
       redirect '/check'
     end
-  end
-  unless @user==nil
-    session[:name] = @user
-    session[:all] = @user, @password
-    redirect "/"
-  else 
-    redirect "/notaunt"
-  end
+  end    
+  redirect '/notauth' unless user
+  session[:name] = user.name
+  session[:all]  = user, password
+  redirect '/'
 end
 
 get '/check_email' do
   erb :exists_email
 end
 
-get '/notaunt' do
+get '/notauth' do
   erb :error
 end
 

@@ -21,12 +21,11 @@ module Posting
     erb :_delete_post_button, locals: { post_id: post_id }
   end
 
-   def delete_comment_button(comment_id)
+  def delete_comment_button(comment_id)
     erb :_delete_comment_button, locals: { comment_id: comment_id}
   end
-end
 
-
-
-
- 
+  def author? post
+    post.user == User.find_by(name: session[:name])
+  end
+end 

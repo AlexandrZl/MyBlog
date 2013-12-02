@@ -24,29 +24,22 @@
       <legend class="">Comments</legend>
     </div>
 <% unless Comment.all==nil %>
-<% @post.comments.each do |post| %>
-<% @com=post.body %>
-<% @title=post.title %>
-<% @nam=post.user_name %>
+<% @post.comments.each do |comment| %>
 <div class="comm">
     <div class="control-group">                  
       <div class="controls">
-        <% if @nam %>
-      <label class="control-label">User:<%= @nam %></label>
+        <% if comment.user_name %>
+      <label class="control-label">User:<%= comment.user_name %></label>
       <% else %>
       <label class="control-label">User:<%= "Anonym" %></label>
       <% end %>
-        <input class="form-control" id="disabledInput" type="text" placeholder="Title:<%= @title %>" disabled>
+        <input class="form-control" id="disabledInput" type="text" placeholder="Title:<%= comment.title %>" disabled>
         <div class="row">
           <div class="col-sm-4 col-md-4">
             <div class="panel panel-default">
-              <div class="panel-body">                
-                <%= @com %>
-                <div class="com">
-                <% if @post.user_id == @id %>
-                <%= delete_comment_button(post.id) %>
-                <% end %> 
-                </div>
+              <div class="panel-body">              
+                <%= comment.body %>
+                <p><br /><%= delete_comment_button(comment.id) %></p>
               </div>
             </div>
           </div>

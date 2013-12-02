@@ -1,11 +1,6 @@
-<% User.all.each do |user| %>
-<% if session[:name] == user.name  %>
-  <% @id=user.id %>
-<% end %>
-<% end %>
-<% if @post.user_id == @id %>
+<% if author? @post %>
   <form action="/delcom/<%= comment_id %>" method="post">
     <input type="hidden" name="_method" value="delete" /> 
-    <input type="submit" value="Delete Comment" />
+    <input type="submit" class="btn btn-error btn-danger" value="Delete Comment" />
   </form>
 <% end %>

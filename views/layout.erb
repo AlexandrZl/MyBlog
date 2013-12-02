@@ -27,7 +27,9 @@
     <% unless session[:all]==nil %>             
     <li><a href="/posts/new">New Post</a></li> 
     <% if post_show_page?  %>
+      <% if author? @post %>
       <li><a href="/posts/<%= @post.id %>/edit">Edit Post</a></li>
+      <% end %>
     <% end %>   
       <form class="nav navbar-right" action="/logout" method="post" >
         <button type="submit" class="btn btn-success">Log out</button>
