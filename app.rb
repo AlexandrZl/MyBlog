@@ -31,12 +31,8 @@ end
 
 
 post "/comment" do
-  User.all.each do |user|
-    if user.name == session[:name]
-      @id=user.id
-    end
-  end
-  @comm = Comment.new(title: params[:title], body: params[:body], post_id: session[:id], user_name: session[:name], user_id: @id)
+  user_id=User.find_by_email(session[:email])
+  @comm = Comment.new(title: params[:title], body: params[:body], post_id: session[:id], user_name: session[:name], user_id: user_id.id)
   if @comm.save
     redirect "/posts/#{@comm.post_id}"
   else
@@ -46,12 +42,8 @@ end
 
 
 post "/posts" do
-  User.all.each do |user|
-    if user.name == session[:name]
-      @id=user.id
-    end
-  end
-  @post = Post.new(title: params[:title], body: params[:body], user_id: @id)
+  user_id=User.find_by_email(session[:email])
+  @post = Post.new(title: params[:title], body: params[:body], user_id: user_id.id)
   if @post.save
     redirect "posts/#{@post.id}"
   else
@@ -91,11 +83,14 @@ end
 
 
 delete "/posts/:id" do
-  @post = Post.find(params[:id]).destroy
-  @post.comments.each do |post| 
-    post.delete
-  end
+  @post = Post.find(params[:id])  
+  if author? @post 
+    @post = Post.find(params[:id]).destroy
+    @post.comments.each do |post| 
+      post.delete
+    end
   redirect "/"
+  end
 end
 
 
