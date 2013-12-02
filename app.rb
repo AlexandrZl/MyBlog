@@ -114,7 +114,7 @@ post '/signup' do
       if user.save
         redirect '/enter'
       else
-        redirect '/notauth'
+        redirect '/reg'
       end
     else
       redirect 'check_email'
@@ -127,8 +127,8 @@ end
 
 post '/signin' do 
   password = Digest::SHA2.hexdigest(params[:password] + @@salt)
-  user = User.find_by(name: params[:name], password: password)
-  user_check = User.find_by_name(params[:name])
+  user = User.find_by(email: params[:email], password: password)
+  user_check = User.find_by_email(params[:email])
   unless user
     if user_check
       redirect '/check'
@@ -136,6 +136,7 @@ post '/signin' do
   end    
   redirect '/notauth' unless user
   session[:name] = user.name
+  session[:email]= user.email
   session[:all]  = user, password
   redirect '/'
 end

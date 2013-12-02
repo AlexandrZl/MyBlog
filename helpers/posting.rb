@@ -26,6 +26,6 @@ module Posting
   end
 
   def author? post
-    post.user == User.find_by(name: session[:name])
+    post.user == User.find_by(email: session[:email])
   end
 end 
