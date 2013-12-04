@@ -1,4 +1,5 @@
 require "sinatra"
+require 'rubygems'
 require "sinatra/activerecord"
 require "digest/sha2"
 require_relative './helpers/posting'
@@ -98,6 +99,7 @@ end
 get "/about" do
   @title = "About Me"
   erb :"pages/about"
+  :partial
 end
 
 
@@ -139,31 +141,31 @@ post '/signin' do
 end
 
 get '/check_email' do
-  erb :exists_email
+  erb :"registration/exists_email"
 end
 
 get '/notauth' do
-  erb :error
+  erb :"registration/error"
 end
 
 get '/enter' do
-  erb :enter
+  erb :"registration/enter"
 end
 
 
 get '/exists' do
-  erb :exists
+  erb :"registration/exists"
 end
 
 
 get '/check' do
-  erb :check
+  erb :"registration/check"
 end
 
 
 get "/reg" do
   @title='Sign up'
-  erb :register      
+  erb :"registration/register"      
 end
 
 

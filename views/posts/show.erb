@@ -8,7 +8,7 @@
     <div class="col-sm-4 col-md-4">
       <div class="panel panel-default">
         <div class="panel-body">                
-          <form action="/comment/:id" method="post">
+          <form action="/comment" method="post">
             <textarea  class="form-control counted" if="title" name="title" placeholder="Title" rows="1"></textarea>
             <textarea class="form-control counted" id="body" name="body" placeholder="Your comment" rows="5"></textarea>
             <button class="btn btn-info" type="submit">Add new comment</button>
@@ -23,7 +23,8 @@
     <div id="legend">
       <legend class="">Comments</legend>
     </div>
-<% unless Comment.all==nil %>
+<% @post=Post.find_by_id(params[:id]) %>
+<% if @post.comments.find_by(post_id: params[:id]) %>
 <% @post.comments.each do |comment| %>
 <div class="comm">
     <div class="control-group">                  
