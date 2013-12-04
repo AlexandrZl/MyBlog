@@ -22,7 +22,9 @@ module Posting
   end
 
   def delete_comment_button(comment_id)
-    erb :_delete_comment_button, locals: { comment_id: comment_id}
+    if author? @post
+      erb :_delete_comment_button, locals: { comment_id: comment_id}
+    end
   end
 
   def author? post

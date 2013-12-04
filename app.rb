@@ -5,6 +5,8 @@ require_relative './helpers/posting'
 helpers Posting
 @@salt='ruby'
 
+Dir.foreach('models/') { |model| require "./models/#{model}" if model.match /.rb$/ }
+
 ActiveRecord::Base.establish_connection(
   :adapter => 'sqlite3',
   :database => './db/blog.sqlite3'
@@ -15,7 +17,6 @@ configure do
   set :session_secret, 'secret'
 end
 
-Dir.foreach('models/') { |model| require "./models/#{model}" if model.match /.rb$/ }
 
 get "/" do
   @posts = Post.order("created_at DESC")
@@ -31,19 +32,22 @@ end
 
 
 post "/comment" do
-  user_id=User.find_by_email(session[:email])
-  @comm = Comment.new(title: params[:title], body: params[:body], post_id: session[:id], user_name: session[:name], user_id: user_id.id)
+  @comm = Comment.new(title: params[:title],
+                      body: params[:body],
+                      post_id: session[:id],
+                      user_name: session[:name],
+                      user_id: session[:user_id])
   if @comm.save
     redirect "/posts/#{@comm.post_id}"
   else
-    redirect "/"
+    redirect '/'
   end
 end
 
 
 post "/posts" do
-  user_id=User.find_by_email(session[:email])
-  @post = Post.new(title: params[:title], body: params[:body], user_id: user_id.id)
+  user_id = session[:user_id]
+  @post = Post.new(title: params[:title], body: params[:body], user_id: user_id)
   if @post.save
     redirect "posts/#{@post.id}"
   else
@@ -76,7 +80,7 @@ put "/posts/:id" do
 end
 
 
-delete "/delcom/:id" do
+delete "/comment/:id" do
   @comm = Comment.find(params[:id]).destroy
   redirect "/posts/#{@comm.post_id}"
 end
@@ -86,9 +90,6 @@ delete "/posts/:id" do
   @post = Post.find(params[:id])  
   if author? @post 
     @post = Post.find(params[:id]).destroy
-    @post.comments.each do |post| 
-      post.delete
-    end
   redirect "/"
   end
 end
@@ -102,11 +103,11 @@ end
 
 post '/signup' do
   if params[:password] == params[:password_second]
-    user=User.find_by_email(params[:email]) 
-    unless user
+    @user=User.find_by_email(params[:email]) 
+    unless @user
       hash = Digest::SHA2.hexdigest(params[:password] + @@salt)
-      user = User.new(name: params[:name], :password => hash, email: params[:email])
-      if user.save
+      @user = User.new(name: params[:name], :password => hash, email: params[:email])
+      if @user.save
         redirect '/enter'
       else
         redirect '/reg'
@@ -132,6 +133,7 @@ post '/signin' do
   redirect '/notauth' unless user
   session[:name] = user.name
   session[:email]= user.email
+  session[:user_id] = user.id
   session[:all]  = user, password
   redirect '/'
 end
