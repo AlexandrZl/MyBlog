@@ -1,4 +1,5 @@
 require 'sinatra/base'
+EMAIL_REGEX =  /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i
 
 module Posting
   def title
@@ -36,6 +37,7 @@ module Posting
     flash[:name]  = params[:name]
     flash[:email] = params[:email]
     flash[:error_email] = 'Check your email' if params[:email].empty?
+    flash[:error_email] = 'wgong your email' unless params[:email].match EMAIL_REGEX
     flash[:error_name]  = 'Check your name'  if params[:name].empty?
     flash[:error_password] = 'Check your password' if  params[:password].empty? || params[:password_second].empty? || params[:password] != params[:password_second]
     flash[:error_email] = 'User with such email already exists' if @user

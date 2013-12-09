@@ -106,8 +106,8 @@ end
 post '/signup' do
   @user=User.find_by_email(params[:email]) 
   valid
-    unless @user || params[:password] != params[:password_second] || params[:password].empty?
-      p params[:name]
+  p flash
+    unless @user || params[:password] != params[:password_second] || params[:password].empty? || flash[:error_email]
       hash = Digest::SHA2.hexdigest(params[:password] + @@salt)
       @user = User.new(name: params[:name], :password => hash, email: params[:email])
       if @user.save
