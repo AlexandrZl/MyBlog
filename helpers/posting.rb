@@ -30,4 +30,15 @@ module Posting
   def author? post
     post.user == User.find_by(email: session[:email])
   end
+
+  def valid 
+    flash.clear
+    flash[:name]  = params[:name]
+    flash[:email] = params[:email]
+    flash[:error_email] = 'Check your email' if params[:email].empty?
+    flash[:error_name]  = 'Check your name'  if params[:name].empty?
+    flash[:error_password] = 'Check your password' if  params[:password].empty? || params[:password_second].empty? || params[:password] != params[:password_second]
+    flash[:error_email] = 'User with such email already exists' if @user
+
+  end
 end 

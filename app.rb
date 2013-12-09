@@ -1,6 +1,7 @@
 require "sinatra"
 require 'rubygems'
 require "sinatra/activerecord"
+require 'sinatra/flash'
 require "digest/sha2"
 require_relative './helpers/posting'
 helpers Posting
@@ -32,7 +33,7 @@ get "/posts/new" do
 end
 
 
-post "/comment" do
+post "/post/:id/comment/:id_comment" do
   @comm = Comment.new(title: params[:title],
                       body: params[:body],
                       post_id: session[:id],
@@ -81,8 +82,8 @@ put "/posts/:id" do
 end
 
 
-delete "/comment/:id" do
-  @comm = Comment.find(params[:id]).destroy
+delete "/post/:id/comment/:id_comment" do
+  @comm = Comment.find(params[:id_comment]).destroy
   redirect "/posts/#{@comm.post_id}"
 end
 
@@ -99,14 +100,14 @@ end
 get "/about" do
   @title = "About Me"
   erb :"pages/about"
-  :partial
 end
 
 
 post '/signup' do
-  if params[:password] == params[:password_second]
-    @user=User.find_by_email(params[:email]) 
-    unless @user
+  @user=User.find_by_email(params[:email]) 
+  valid
+    unless @user || params[:password] != params[:password_second] || params[:password].empty?
+      p params[:name]
       hash = Digest::SHA2.hexdigest(params[:password] + @@salt)
       @user = User.new(name: params[:name], :password => hash, email: params[:email])
       if @user.save
@@ -114,12 +115,9 @@ post '/signup' do
       else
         redirect '/reg'
       end
-    else
-      redirect 'check_email'
+    else 
+      redirect '/reg'
     end
-  else
-    redirect '/reg'
-  end
 end
 
 

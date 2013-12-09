@@ -7,31 +7,45 @@
     <div class="control-group">
       <label class="control-label"  for="name">Username</label>
       <div class="controls">
-        <input type="text" id="name" name="name" placeholder="" class="input-xlarge">
-        <p class="help-block">Username can contain any letters or numbers, without spaces</p>
+        <input type="text" value="<%= flash[:name] %>" id="name" name="name" placeholder="Name" class="input-xlarge">
+        <% if flash[:error_name] %>
+        <p class="help-block"><%= flash[:error_name] %></p>
+        <% else %>
+        <p class="help-block">Please enter your name</p>
+        <% end %>
       </div>
     </div>
+
  
     <div class="control-group">
       <label class="control-label" for="email">E-mail</label>
       <div class="controls">
-        <input type="text" id="email" name="email" placeholder="" class="input-xlarge">
-        <p class="help-block">Please provide your E-mail</p>
+        <input type="text" id="email" value="<%= flash[:email] %>" name="email" placeholder="Email" class="input-xlarge">
+        <% if flash[:error_email] %>
+        <p class="help-block"><%= flash[:error_email] %></p>
+        <% else %>
+        <p class="help-block">Please enter your email</p>
+        <% end %>
       </div>
     </div>
  
     <div class="control-group">
       <label class="control-label" for="password">Password</label>
       <div class="controls">
-        <input type="password" id="password" name="password" placeholder="" class="input-xlarge">
-        <p class="help-block">Password should be at least 4 characters</p>
+        <input type="password" id="password" name="password" placeholder="Password" class="input-xlarge">
+        <% if flash[:error_password] %>
+        <p class="help-block"><%= flash[:error_password] %></p>
+        <% else %>
+        <p class="help-block">Please enter your password</p>
+        <% end %>
       </div>
     </div>
+
  
     <div class="control-group">
       <label class="control-label"  for="password">Password (Confirm)</label>
       <div class="controls">
-        <input type="password" id="password_confirm" name="password_second" placeholder="" class="input-xlarge">
+        <input type="password" id="password_confirm" name="password_second" placeholder="Password" class="input-xlarge">
         <p class="help-block">Please confirm password</p>
       </div>
     </div>
