@@ -48,12 +48,14 @@ end
 
 
 post "/posts" do
+  valid_post
+  flash[:title] = params[:title]
   user_id = session[:user_id]
   @post = Post.new(title: params[:title], body: params[:body], user_id: user_id)
   if @post.save
     redirect "posts/#{@post.id}"
   else
-    erb :"posts/new"
+    redirect '/posts/new'
   end
 end
  
@@ -105,7 +107,7 @@ end
 
 post '/signup' do
   @user=User.find_by_email(params[:email]) 
-  valid
+  valid_signup
   p flash
     unless @user || params[:password] != params[:password_second] || params[:password].empty? || flash[:error_email]
       hash = Digest::SHA2.hexdigest(params[:password] + @@salt)
@@ -122,19 +124,16 @@ end
 
 
 post '/signin' do 
+  valid_signin
   password = Digest::SHA2.hexdigest(params[:password] + @@salt)
   user = User.find_by(email: params[:email], password: password)
-  user_check = User.find_by_email(params[:email])
-  unless user
-    if user_check
-      redirect '/check'
-    end
-  end    
-  redirect '/notauth' unless user
-  session[:name] = user.name
-  session[:email]= user.email
-  session[:user_id] = user.id
-  session[:all]  = user, password
+  if user    
+    session[:name] = user.name
+    session[:email]= user.email
+    session[:user_id] = user.id
+    session[:all]  = user, password
+    redirect '/'
+  end
   redirect '/'
 end
 

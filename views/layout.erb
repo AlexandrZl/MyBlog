@@ -41,14 +41,17 @@
             </form>
             <form  action="/signin" method="post" class="navbar-form navbar-right">
                 <div class="form-group">
-                  <input type="text" name="email" placeholder="Email" class="form-control">
+                  <input id="email" type="text" name="email" placeholder="Email" class="form-control">
                 </div>
                 <div class="form-group">
                    <input type="password" name="password" placeholder="Password" class="form-control">
                 </div>
                 <button type="submit" class="btn btn-success">Sign in</button>
+                <% unless flash.empty? %>
+                <div class="alert alert-danger"><%=flash[:error_email] %></div>
+                <% end %>
               </form>    
-              <% end %>                       
+              <% end %>        
       </div>
        </div>
       </div>
