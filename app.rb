@@ -4,8 +4,9 @@ require "sinatra/activerecord"
 require 'sinatra/flash'
 require "digest/sha2"
 require_relative './helpers/posting'
-helpers Posting
-@@salt='ruby'
+require_relative './helpers/validation'
+require_relative './helpers/sign'
+helpers Posting, Validation, Sign
 
 Dir.foreach('models/') { |model| require "./models/#{model}" if model.match /.rb$/ }
 
@@ -34,16 +35,15 @@ end
 
 
 post "/posts/:id/create_comment" do
+  @post = Post.find(params[:id])
+  valid_comment
   @comm = Comment.new(title: params[:title],
                       body: params[:body],
                       post_id: params[:id],
                       user_name: session[:name],
                       user_id: session[:user_id])
-  if @comm.save
-    redirect "/posts/#{@comm.post_id}"
-  else
-    redirect '/'
-  end
+  @comm.save
+  redirect "/posts/#{@post.id}"
 end
 
 
@@ -96,7 +96,7 @@ delete "/posts/:id" do
   @post = Post.find(params[:id])  
   if author? @post 
     @post = Post.find(params[:id]).destroy
-  redirect "/"
+    redirect "/"
   end
 end
 
@@ -110,33 +110,13 @@ end
 post '/signup' do
   @user=User.find_by_email(params[:email]) 
   valid_signup
-  p flash
-    unless @user || params[:password] != params[:password_second] || params[:password].empty? || flash[:error_email]
-      hash = Digest::SHA2.hexdigest(params[:password] + @@salt)
-      @user = User.new(name: params[:name], :password => hash, email: params[:email])
-      if @user.save
-        redirect '/enter'
-      else
-        redirect '/reg'
-      end
-    else 
-      redirect '/reg'
-    end
+  signup
 end
 
 
 post '/signin' do 
   valid_signin
-  password = Digest::SHA2.hexdigest(params[:password] + @@salt)
-  user = User.find_by(email: params[:email], password: password)
-  if user    
-    session[:name] = user.name
-    session[:email]= user.email
-    session[:user_id] = user.id
-    session[:all]  = user, password
-    redirect '/'
-  end
-  redirect '/'
+  signin
 end
 
 
