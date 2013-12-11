@@ -33,10 +33,10 @@ get "/posts/new" do
 end
 
 
-post "/post/:id/comment/:id_comment" do
+post "/posts/:id/create_comment" do
   @comm = Comment.new(title: params[:title],
                       body: params[:body],
-                      post_id: session[:id],
+                      post_id: params[:id],
                       user_name: session[:name],
                       user_id: session[:user_id])
   if @comm.save
@@ -47,7 +47,7 @@ post "/post/:id/comment/:id_comment" do
 end
 
 
-post "/posts" do
+post "/posts" do  
   valid_post
   flash[:title] = params[:title]
   user_id = session[:user_id]
@@ -62,7 +62,6 @@ end
 
 get "/posts/:id" do
   @post = Post.find(params[:id])
-  session[:id] = @post.id
   erb :"posts/show"
 end
 
@@ -84,9 +83,12 @@ put "/posts/:id" do
 end
 
 
-delete "/post/:id/comment/:id_comment" do
-  @comm = Comment.find(params[:id_comment]).destroy
-  redirect "/posts/#{@comm.post_id}"
+delete "/posts/:id/comment/:id_comment" do
+  @post = Post.find(params[:id])  
+  if author? @post
+    @comm = Comment.find(params[:id_comment]).destroy
+    redirect "/posts/#{@comm.post_id}"
+  end
 end
 
 
@@ -137,26 +139,9 @@ post '/signin' do
   redirect '/'
 end
 
-get '/check_email' do
-  erb :"registration/exists_email"
-end
-
-get '/notauth' do
-  erb :"registration/error"
-end
 
 get '/enter' do
   erb :"registration/enter"
-end
-
-
-get '/exists' do
-  erb :"registration/exists"
-end
-
-
-get '/check' do
-  erb :"registration/check"
 end
 
 

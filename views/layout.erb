@@ -47,8 +47,8 @@
                    <input type="password" name="password" placeholder="Password" class="form-control">
                 </div>
                 <button type="submit" class="btn btn-success">Sign in</button>
-                <% unless flash.empty? %>
-                <div class="alert alert-danger"><%=flash[:error_email] %></div>
+                <% if flash[:error_email_signin] %>
+                <div class="alert alert-danger"><%=flash[:error_email_signin]%></div>
                 <% end %>
               </form>    
               <% end %>        

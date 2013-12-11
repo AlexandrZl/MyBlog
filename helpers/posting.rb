@@ -19,7 +19,9 @@ module Posting
   end
 
   def delete_post_button(post_id)
-    erb :"posts/_delete_post_button", locals: { post_id: post_id }
+    if author? @post
+      erb :"posts/_delete_post_button", locals: { post_id: post_id }
+    end
   end
 
   def delete_comment_button(comment_id)
@@ -52,8 +54,8 @@ module Posting
   def valid_signin
     flash.clear
     user_check = User.find_by_email(params[:email])
-    flash[:error_email] = 'This email is not exists' unless user_check
-    flash[:error_email] = 'Wrong email' unless params[:email].match EMAIL_REGEX
-    flash[:password]    = 'Check your passwors' if params[:password].empty?
+    flash[:error_email_signin] = 'This email is not exists' unless user_check
+    flash[:error_email_signin] = 'Wrong email' unless params[:email].match EMAIL_REGEX
+    flash[:error_email_signin] = 'Check email or password' if user_check && params[:password]
   end
 end 
