@@ -3,17 +3,21 @@ require 'rubygems'
 require "sinatra/activerecord"
 require 'sinatra/flash'
 require "digest/sha2"
-require_relative './helpers/posting'
-require_relative './helpers/validation'
-require_relative './helpers/sign'
-helpers Posting, Validation, Sign
 
 Dir.foreach('models/') { |model| require "./models/#{model}" if model.match /.rb$/ }
+Dir.foreach('./helpers/') { |model| require_relative "./helpers/#{model}" if model.match /.rb$/ }
+helpers Posting, Validation, Sign
 
 ActiveRecord::Base.establish_connection(
-  :adapter => 'sqlite3',
-  :database => './db/blog.sqlite3'
-)
+  adapter: postgresql
+  encoding: unicode
+  pool: 5
+  database: dg0aiarns08uq
+  username: igswxxjndlzspv
+  password: G6kp8PcdFphLzRPAqX4hww6D19
+  host: ec2-54-204-43-139.compute-1.amazonaws.com
+  port: 5432)
+
 
 configure do
   enable :sessions
@@ -49,7 +53,6 @@ end
 
 post "/posts" do  
   valid_post
-  flash[:title] = params[:title]
   user_id = session[:user_id]
   @post = Post.new(title: params[:title], body: params[:body], user_id: user_id)
   if @post.save
@@ -87,7 +90,7 @@ delete "/posts/:id/comment/:id_comment" do
   @post = Post.find(params[:id])  
   if author? @post
     @comm = Comment.find(params[:id_comment]).destroy
-    redirect "/posts/#{@comm.post_id}"
+    redirect "/posts/#{params[:id]}"
   end
 end
 
@@ -95,7 +98,7 @@ end
 delete "/posts/:id" do
   @post = Post.find(params[:id])  
   if author? @post 
-    @post = Post.find(params[:id]).destroy
+    @post.destroy
     redirect "/"
   end
 end

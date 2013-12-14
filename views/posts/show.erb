@@ -33,7 +33,7 @@
   <div class="control-group">                  
     <div class="controls">
       <% if comment.user_name %>
-        <label class="control-label">User:<%= comment.user_name %></label>
+        <label class="control-label">User:<%= comment.user.name %></label>
       <% else %>
         <label class="control-label">User:<%= "Anonym" %></label>
       <% end %>  
