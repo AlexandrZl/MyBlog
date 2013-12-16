@@ -6,6 +6,7 @@ gem "activerecord"
 gem "sinatra-activerecord"
 gem 'sinatra-flash'
 gem 'pg'
+gem 'sinatra-redirect-with-flash'
 
 group :development do
   gem "shotgun"

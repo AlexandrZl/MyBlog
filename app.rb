@@ -9,14 +9,9 @@ Dir.foreach('./helpers/') { |model| require_relative "./helpers/#{model}" if mod
 helpers Posting, Validation, Sign
 
 ActiveRecord::Base.establish_connection(
-  adapter: postgresql
-  encoding: unicode
-  pool: 5
-  database: dd6sae0puok0jl
-  username: itbckihzmazlyb
-  password: Fo1cZaSiUFaR2pxxEecoMv1228
-  host: ec2-54-225-101-64.compute-1.amazonaws.com
-  port: 5432)
+  :adapter => 'sqlite3',
+  :database => './db/blog.sqlite3'
+)
 
 
 configure do
@@ -46,8 +41,11 @@ post "/posts/:id/create_comment" do
                       post_id: params[:id],
                       user_name: session[:name],
                       user_id: session[:user_id])
-  @comm.save
-  redirect "/posts/#{@post.id}"
+  if @comm.save
+    redirect "/posts/#{params[:id]}"
+  else
+    redirect "/posts/#{params[:id]}"
+  end
 end
 
 
@@ -78,17 +76,19 @@ end
 
 put "/posts/:id" do
   @post = Post.find(params[:id])
-  if @post.update_attributes(params[:post])
-    redirect "/posts/#{@post.id}"
-  else
-    erb :"posts/edit"
+  if author? @post
+    if @post.update_attributes(params[:post]) 
+      redirect "/posts/#{@post.id}"
+    else
+      erb :"posts/edit"
+    end
   end
 end
 
 
 delete "/posts/:id/comment/:id_comment" do
-  @post = Post.find(params[:id])  
-  if author? @post
+  @comm = Comment.find(params[:id_comment])  
+  if author? @comm.post
     @comm = Comment.find(params[:id_comment]).destroy
     redirect "/posts/#{params[:id]}"
   end
