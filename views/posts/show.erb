@@ -12,8 +12,10 @@
             <textarea  class="form-control counted" if="title" name="title" placeholder="Title" rows="1"></textarea>
             <textarea class="form-control counted" id="body" name="body" placeholder="Your comment" rows="5"></textarea>
             <button class="btn btn-info" type="submit">Add new comment</button>
-            <% if flash[:error_comment] %>
-                <div class="alert alert-danger"><%=flash[:error_comment]%></div>
+            <% if @comm %>
+              <% @comm.errors[:body].each do |body| %>
+                <p class="help-block"><%= body %></p>
+              <% end %>
             <% end %>
           </form>
         </div>

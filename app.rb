@@ -6,7 +6,7 @@ require "digest/sha2"
 
 Dir.foreach('models/') { |model| require "./models/#{model}" if model.match /.rb$/ }
 Dir.foreach('./helpers/') { |model| require_relative "./helpers/#{model}" if model.match /.rb$/ }
-helpers Posting, Validation, Sign
+helpers Posting
 
 ActiveRecord::Base.establish_connection(
   :adapter => 'sqlite3',
@@ -35,13 +35,14 @@ end
 
 post "/posts/:id/create_comment" do
   @post = Post.find(params[:id])
-  valid_comment
   @comm = Comment.new(title: params[:title],
                       body: params[:body],
                       post_id: params[:id],
                       user_name: session[:name],
                       user_id: session[:user_id])
-  if @comm.save
+  @comm.save
+  p @comm.errors
+  if @comm.errors.empty?
     redirect "/posts/#{params[:id]}"
   else
     redirect "/posts/#{params[:id]}"
@@ -50,13 +51,13 @@ end
 
 
 post "/posts" do  
-  valid_post
   user_id = session[:user_id]
   @post = Post.new(title: params[:title], body: params[:body], user_id: user_id)
-  if @post.save
-    redirect "posts/#{@post.id}"
-  else
+  @post.save
+  unless @post.errors.empty?
     redirect '/posts/new'
+  else
+    redirect "posts/#{@post.id}"
   end
 end
  
@@ -111,15 +112,35 @@ end
 
 
 post '/signup' do
-  @user=User.find_by_email(params[:email]) 
-  valid_signup
-  signup
+  @user = User.new(name: params[:name], email: params[:email], password: params[:password])
+  if User.is_persisted?(params[:email])
+    @user.valid?
+    erb :'registration/register'
+  else
+    @user.password_second = params[:password_second]
+    @user.save 
+    unless @user.errors.empty?
+      erb :'registration/register'
+    else
+      redirect '/enter'
+    end
+  end
 end
 
 
-post '/signin' do 
-  valid_signin
-  signin
+post '/signin' do
+  user_check=User.find_by(email: params[:email])
+  user=User.find_by(email: params[:email], password: user_check.hash(params[:password]) ) if user_check
+  if user
+    session[:name] = user.name
+    session[:email]= user.email
+    session[:user_id] = user.id
+    session[:all]  = user
+    redirect '/'
+  else
+    flash[:error]="check email or password"
+    redirect '/'
+  end
 end
 
 

@@ -7,9 +7,11 @@
     <div class="control-group">
       <label class="control-label"  for="name">Username</label>
       <div class="controls">
-        <input type="text" value="<%= flash[:name] %>" id="name" name="name" placeholder="Name" class="input-xlarge">
-        <% if flash[:error_name] %>
-        <p class="help-block"><%= flash[:error_name] %></p>
+        <input type="text" value="<%= @user.name if @user%>" id="name" name="name" placeholder="Name" class="input-xlarge">
+         <% if @user %>
+        <% @user.errors[:name].each do |name| %>
+          <p class="help-block"><%= name %></p>
+          <% end %>
         <% else %>
         <p class="help-block">Please enter your name</p>
         <% end %>
@@ -20,9 +22,11 @@
     <div class="control-group">
       <label class="control-label" for="email">E-mail</label>
       <div class="controls">
-        <input type="text" id="email" value="<%= flash[:email] %>" name="email" placeholder="Email" class="input-xlarge">
-        <% if flash[:error_email] %>
-        <p class="help-block"><%= flash[:error_email] %></p>
+        <input type="text" id="email" value="<%= @user.email if @user%>" name="email" placeholder="Email" class="input-xlarge">
+        <% if @user %>
+        <% @user.errors[:email].each do |email| %>
+          <p class="help-block"><%= email %></p>
+          <% end %>
         <% else %>
         <p class="help-block">Please enter your email</p>
         <% end %>
@@ -33,8 +37,10 @@
       <label class="control-label" for="password">Password</label>
       <div class="controls">
         <input type="password" id="password" name="password" placeholder="Password" class="input-xlarge">
-        <% if flash[:error_password] %>
-        <p class="help-block"><%= flash[:error_password] %></p>
+        <% if @user %>
+        <% @user.errors[:password].each do |password| %>
+          <p class="help-block"><%= password %></p>
+          <% end %>
         <% else %>
         <p class="help-block">Please enter your password</p>
         <% end %>
