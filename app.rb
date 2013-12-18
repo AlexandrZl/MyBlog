@@ -8,11 +8,6 @@ Dir.foreach('models/') { |model| require "./models/#{model}" if model.match /.rb
 Dir.foreach('./helpers/') { |model| require_relative "./helpers/#{model}" if model.match /.rb$/ }
 helpers Posting
 
-ActiveRecord::Base.establish_connection(
-  :adapter => 'sqlite3',
-  :database => './db/blog.sqlite3'
-)
-
 
 configure do
   enable :sessions
