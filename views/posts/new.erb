@@ -15,7 +15,11 @@
             <label >Body:</label><br />
             <textarea  class="form-control counted" id="body"  name="body" rows="5"></textarea>
             <br />
-            <p class="help-block"><%= flash[:error_body] %></p>
+            <% if @post.errors%>
+              <% @post.errors[:body].each do |body| %>
+                <p class="help-block"><%= body %></p>
+              <% end %>
+            <% end %>            
             <input type="submit" class="btn btn-info" value="Create Post" />
           </form>
         </div>

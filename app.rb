@@ -50,7 +50,8 @@ post "/posts" do
   @post = Post.new(title: params[:title], body: params[:body], user_id: user_id)
   @post.save
   unless @post.errors.empty?
-    redirect '/posts/new'
+    @post.valid?
+    erb :"posts/new"
   else
     redirect "posts/#{@post.id}"
   end
@@ -124,13 +125,14 @@ end
 
 
 post '/signin' do
-  user_check=User.find_by(email: params[:email])
-  user=User.find_by(email: params[:email], password: user_check.hash(params[:password]) ) if user_check
-  if user
-    session[:name] = user.name
-    session[:email]= user.email
-    session[:user_id] = user.id
-    session[:all]  = user
+  @user=User.new(password: params[:password])
+  @user.hash
+  user_check = User.find_by_email(params[:email])
+  if User.is_persisted?(params[:email]) && user_check.password == @user.password
+    session[:name] = user_check.name
+    session[:email]= user_check.email
+    session[:user_id] = user_check.id
+    session[:all]  = user_check
     redirect '/'
   else
     flash[:error]="check email or password"

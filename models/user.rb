@@ -7,22 +7,23 @@ class User < ActiveRecord::Base
     validates :password, presence: true , length: { minimum: 6 }
 	has_many  :posts, :dependent => :destroy
 	validate :check_password
-	before_save :hash1
+	validate :check_email
+	before_save :hash
 
 	
 	def self.is_persisted? email
-		user = User.find_by_email email 
+		user = User.find_by_email email
 	end
 
-	def check_password
+	def check_email
+	  errors[:email] = 'this email already exists' if User.find_by_email email
+    end
+
+	def check_password 
 		errors[:password] = 'password does not match' unless password == password_second
 	end
 
-	def hash1
+	def hash 
 	  self.password = Digest::SHA2.hexdigest(password + SALT)
-	end
-
-	def hash password
-	  Digest::SHA2.hexdigest(password + SALT)
-	end
+    end
 end
