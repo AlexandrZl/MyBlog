@@ -125,14 +125,14 @@ end
 
 
 post '/signin' do
-  @user=User.new(password: params[:password])
-  @user.hash
-  user_check = User.find_by_email(params[:email])
-  if User.is_persisted?(params[:email]) && user_check.password == @user.password
-    session[:name] = user_check.name
-    session[:email]= user_check.email
-    session[:user_id] = user_check.id
-    session[:all]  = user_check
+  @user_check = User.new(password: params[:password])
+  @user_check = @user_check.hash
+  @user = User.find_by_email(params[:email])
+  if User.is_persisted?(params[:email]) && @user_check == @user.password
+    session[:name] = @user.name
+    session[:email]= @user.email
+    session[:user_id] = @user.id
+    session[:all]  = @user
     redirect '/'
   else
     flash[:error]="check email or password"

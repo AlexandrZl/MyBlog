@@ -2,10 +2,10 @@ production:
   adapter: postgresql
   encoding: unicode
   pool: 5
-  database: d3033eqc59g02e
-  username: vbrgixnwdhapun
-  password: bzT8iAvGQIIIvAmmlVsNlorXfP
-  host: ec2-54-204-41-178.compute-1.amazonaws.com
+  database: d1eibrdh4fqouj
+  username: mfuqsxjfotetap
+  password: _LCyhDVWyJ5WKqtQSqnmWH6io_
+  host: ec2-54-225-135-30.compute-1.amazonaws.com
   port: 5432
 
   # SQLite version 3.x
