@@ -33,7 +33,7 @@
     <% end %>   
       <form class="nav navbar-right" action="/logout" method="post" >
         <button type="submit" class="btn btn-success">Log out</button>
-        <p class="text-info">Welcome, <%= session[:name] %></p>
+        <p class="text-info">Welcome, <%= session[:all].name %></p>
       </form>
     <% else  %>
     <form action = "/reg" method = "get" class="navbar-form navbar-right">

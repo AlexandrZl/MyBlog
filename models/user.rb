@@ -4,7 +4,8 @@ class User < ActiveRecord::Base
     validates :email, presence: true, format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i, 
               message: "only allows letters"}
     validates :name, presence: true
-    validates :password, presence: true , length: { minimum: 6 }
+    validates :password, presence: true , length: { minimum: 6,
+              message: "minimum 6 symbols" }
 	has_many  :posts, :dependent => :destroy
 	validate :check_password
 	validate :check_email

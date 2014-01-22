@@ -33,12 +33,12 @@ post "/posts/:id/create_comment" do
   @comm = Comment.new(title: params[:title],
                       body: params[:body],
                       post_id: params[:id],
-                      user_name: session[:name],
-                      user_id: session[:user_id])
+                      user_name: session[:all].name,
+                      user_id: session[:all].id)
   @comm.save
-  p @comm.errors
-  if @comm.errors.empty?
-    redirect "/posts/#{params[:id]}"
+  unless @comm.errors.empty?
+    @comm.valid?
+    erb :"posts/show"
   else
     redirect "/posts/#{params[:id]}"
   end
@@ -46,8 +46,7 @@ end
 
 
 post "/posts" do  
-  user_id = session[:user_id]
-  @post = Post.new(title: params[:title], body: params[:body], user_id: user_id)
+  @post = Post.new(title: params[:title], body: params[:body], user_id: session[:all].id)
   @post.save
   unless @post.errors.empty?
     @post.valid?
@@ -116,6 +115,7 @@ post '/signup' do
     @user.password_second = params[:password_second]
     @user.save 
     unless @user.errors.empty?
+      @user.valid?
       erb :'registration/register'
     else
       redirect '/enter'
@@ -129,10 +129,7 @@ post '/signin' do
   @user_check = @user_check.hash
   @user = User.find_by_email(params[:email])
   if User.is_persisted?(params[:email]) && @user_check == @user.password
-    session[:name] = @user.name
-    session[:email]= @user.email
-    session[:user_id] = @user.id
-    session[:all]  = @user
+    session[:all] = @user
     redirect '/'
   else
     flash[:error]="check email or password"

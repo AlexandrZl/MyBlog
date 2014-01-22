@@ -30,6 +30,10 @@ module Posting
   end
 
   def author? post
-    post.user == User.find_by(email: session[:email])
+    post.user == User.find_by(email: session[:all].email)
+  end
+
+  def h(text)
+    Rack::Utils.escape_html(text)
   end
 end 
